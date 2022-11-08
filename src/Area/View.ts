@@ -5,5 +5,6 @@ export class Area {
 
     constructor(app: Application) {
         this.app = app
+        
     }
 }
