@@ -14,6 +14,10 @@ const app = new Application({
 
 function setup(): void {
   const area = new Area(app)
+
+  app.ticker.add((delta) => {
+    area.update(2, delta)
+  })
 }
 
 window.onload = setup

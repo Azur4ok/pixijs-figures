@@ -1,13 +1,13 @@
 import { Figure } from './Figure'
 
 export class Ellipse extends Figure {
-  static width: number = 30
-  static height: number = 25
+  private static WIDTH: number = 30
+  private static HEIGHT: number = 25
   draw(): void {
-    this.drawEllipse(this.x, this.y, this.width, this.height)
+    this.drawEllipse(this.x, this.y, Ellipse.WIDTH, Ellipse.HEIGHT)
     this.area = this.calculateArea()
   }
   calculateArea(): number {
-    return Math.round(Math.PI * this.width * this.height)
+    return Math.round(Math.PI * Ellipse.WIDTH * Ellipse.HEIGHT)
   }
 }
