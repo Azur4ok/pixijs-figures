@@ -1,4 +1,4 @@
-import { Application, Container } from 'pixi.js'
+import { Application } from 'pixi.js'
 import { Utils } from '../utils'
 import { Ellipse } from './../figers/Ellipse'
 import { Circle } from './../figers/Circle'
@@ -6,36 +6,40 @@ import { Controller } from './Controller'
 
 export class Area {
   private app: Application
-  ellipse!: Ellipse
-  circle!: Circle
-  container!: any
+  private numberOfCurrentShapes: string | null | undefined
+  private numberOfOccupiedArea: string | null | undefined
+  private numberOfShapesPerSec!: string | null | undefined
+  private gravityValue: string | null | undefined
   private controller: Controller
 
   constructor(app: Application) {
     this.app = app
+
+    this.numberOfCurrentShapes = document.getElementById('current-shapes')!.textContent
+    this.numberOfOccupiedArea = document.getElementById('occupied-area')!.textContent
+    this.numberOfShapesPerSec = document.getElementById('shapes-per-sec')!.textContent
+    this.gravityValue = document.getElementById('gravity-value')!.textContent
+
     this.controller = new Controller()
-    this.drawFigure()
+    this.setCurentData()
+    this.addAllListeners()
+    this.app.stage.addChild(this.controller.container)
   }
 
   addAllListeners(): void {
-    this.controller.bindIncreaseButtonsListener()
+    this.controller.bindGravityButtonsListeners()
   }
 
-  drawFigure() {
-    this.container = new Container()
-    this.ellipse = new Ellipse(15, -10, parseInt(Utils.randomColor(), 16))
-    this.circle = new Circle(100, -10, parseInt(Utils.randomColor(), 16))
-    this.container.addChild(this.ellipse)
-    this.container.addChild(this.circle)
-    this.app.stage.addChild(this.container)
+  setCurentData() {
+    const data = this.controller.getCurrentData()
+
+    document.getElementById('gravity-value')!.textContent = `${this.gravityValue} ${String(
+      data.gravityValue,
+    )}`
   }
 
-  update(gravity: number, delta: number) {
-    this.ellipse.update(gravity, delta)
-    this.circle.update(gravity, delta)
-    if (this.ellipse.y > 500 && this.circle.y > 500) {
-      this.ellipse.y = -10
-      this.circle.y = -10
-    }
+  update(delta: number) {
+    this.setCurentData()
+    this.controller.update(delta)
   }
 }

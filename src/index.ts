@@ -12,11 +12,14 @@ const app = new Application({
   view: document.getElementById('canvas') as HTMLCanvasElement,
 })
 
+app.stage.interactive = true
+app.stage.cursor = 'pointer'
+
 function setup(): void {
   const area = new Area(app)
 
-  app.ticker.add((delta) => {
-    area.update(2, delta)
+  app.ticker.add((delta: number) => {
+    area.update(delta)
   })
 }
 
