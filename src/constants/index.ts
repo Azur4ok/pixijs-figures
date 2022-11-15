@@ -15,5 +15,5 @@ export interface CurrentData {
   numberOfOccupiedArea: number
 }
 
-export const DEFAULT_GRAVITY_VALUE = 5
+export const DEFAULT_GRAVITY_VALUE = 2
 export const RADIUS = 25

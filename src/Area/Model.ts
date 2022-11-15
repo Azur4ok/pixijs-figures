@@ -1,23 +1,24 @@
 import { Figure } from '../figers/Figure'
-import { Container, Graphics } from 'pixi.js'
-import { Ellipse } from '../figers/Ellipse'
-import { Circle } from '../figers/Circle'
-import { Utils } from '../utils'
+import { Container } from 'pixi.js'
 import { DEFAULT_GRAVITY_VALUE } from '../constants'
-import { Polygon } from './../figers/Polygon'
+import { ShapesPool } from './../ShapesPool/index'
 
 export class Model {
-  private figures: Figure[] = []
-  private gravity: number = DEFAULT_GRAVITY_VALUE
-  ellipse!: Ellipse
-  circle!: Circle
+  public figures: Figure[] = []
+  public gravity: number = DEFAULT_GRAVITY_VALUE
+  public figuresPerSec: number = 5
   container: Container
-  figure: Graphics = new Graphics()
-  polygon!: Polygon
+  pool: ShapesPool
 
   constructor() {
     this.container = new Container()
-    this.drawFigure()
+    this.pool = new ShapesPool()
+  }
+
+  createShapes(i: number) {
+    this.figures[i] = this.pool.borrowShape()
+
+    this.container.addChild(this.figures[i])
   }
 
   getNumberOfCurrentShapes(): number {
@@ -30,6 +31,14 @@ export class Model {
 
   increaseGravityValue = () => {
     this.gravity += 1
+  }
+
+  increaseFiguresPerSec() {
+    this.figuresPerSec += 1
+  }
+
+  decreaseFiguresPerSec() {
+    this.figuresPerSec -= 1
   }
 
   decreaseGravityValue = () => {
@@ -49,35 +58,21 @@ export class Model {
     return this.container
   }
 
-  drawFigure() {
-    this.figure = new Graphics()
-    this.ellipse = new Ellipse(50, -10, parseInt(Utils.randomColor(), 16))
-    this.circle = new Circle(150, -10, parseInt(Utils.randomColor(), 16))
-    this.polygon = new Polygon(200, -10, parseInt(Utils.randomColor(), 16))
-    this.container.addChild(this.ellipse)
-    this.container.addChild(this.circle)
-    this.container.addChild(this.polygon)
-  }
-
   update(delta: number) {
-    this.ellipse.update(this.gravity, delta)
-    this.circle.update(this.gravity, delta)
-    this.polygon.update(this.gravity, delta)
-    if (this.ellipse.y > 500 && this.circle.y > 500) {
-      this.ellipse = new Ellipse(50, -10, parseInt(Utils.randomColor(), 16))
-      this.circle = new Circle(150, -10, parseInt(Utils.randomColor(), 16))
-      this.polygon = new Polygon(200, -10, parseInt(Utils.randomColor(), 16))
-      this.container.addChild(this.ellipse)
-      this.container.addChild(this.circle)
-      this.container.addChild(this.polygon)
-    }
-    if (this.ellipse.y <= -50 && this.circle.y <= -50) {
-      this.ellipse = new Ellipse(50, 440, parseInt(Utils.randomColor(), 16))
-      this.circle = new Circle(100, 440, parseInt(Utils.randomColor(), 16))
-      this.polygon = new Polygon(200, 440, parseInt(Utils.randomColor(), 16))
-      this.container.addChild(this.ellipse)
-      this.container.addChild(this.circle)
-      this.container.addChild(this.polygon)
+    for (let i = 0; i < this.figuresPerSec; i++) {
+      if (this.figures.length !== this.figuresPerSec) {
+        console.log(this.figures.length)
+
+        this.createShapes(i)
+      } else {
+        if (this.figures[i].y <= 550) {
+          this.figures[i].update(this.gravity, delta)
+        } else {
+          this.pool.returnShape(this.figures[i])
+          delete this.figures[i]
+          this.createShapes(i)
+        }
+      }
     }
   }
 }
