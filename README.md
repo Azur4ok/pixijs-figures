@@ -1,3 +1,3 @@
 # pixijs-figures
 
-### live example
+## live example https://azur4ok.github.io/pixijs-figures/
