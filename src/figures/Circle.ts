@@ -1,5 +1,5 @@
 import { Figure } from './Figure'
-import { RADIUS } from './../constants/index';
+import { RADIUS } from '../constants/index'
 
 export class Circle extends Figure {
   private static radius: number = RADIUS

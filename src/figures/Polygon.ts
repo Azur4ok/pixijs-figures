@@ -1,6 +1,6 @@
 import { Figure } from './Figure'
-import { RADIUS } from './../constants/index'
-import { Utils } from './../utils/index'
+import { RADIUS } from '../constants/index'
+import { Utils } from '../utils/index'
 
 export class Polygon extends Figure {
   draw(): void {

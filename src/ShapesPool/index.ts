@@ -1,4 +1,4 @@
-import { Circle, Ellipse, Figure, Polygon } from '../figers'
+import { Circle, Ellipse, Figure, Polygon } from '../figures'
 import { Utils } from './../utils/index'
 
 export class ShapesPool {
@@ -19,14 +19,14 @@ export class ShapesPool {
       switch (type) {
         case 'ellipse':
           const ellipse = new Ellipse(
-            Utils.generateRandomInteger(40, 300),
+            Utils.generateRandomInteger(40, 250),
             -10,
             Utils.randomColor(),
           )
           this.shapes.push(ellipse)
           break
         case 'circle':
-          const circle = new Circle(Utils.generateRandomInteger(40, 300), -10, Utils.randomColor())
+          const circle = new Circle(Utils.generateRandomInteger(40, 250), -10, Utils.randomColor())
           this.shapes.push(circle)
           break
         case 'polygon':

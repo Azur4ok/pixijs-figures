@@ -16,4 +16,5 @@ export interface CurrentData {
 }
 
 export const DEFAULT_GRAVITY_VALUE = 2
+export const DEFAULT_FIGURES_PER_SEC_VALUE = 5
 export const RADIUS = 25
