@@ -15,10 +15,14 @@ export class Model {
     this.pool = new ShapesPool()
   }
 
-  createShapes(i: number) {
-    this.figures[i] = this.pool.borrowShape()
-
-    this.container.addChild(this.figures[i])
+  createShapes() {
+    for (let i = this.figures.length; i < this.figuresPerSec; i++) {
+      console.log(this.figures.length)
+      this.figures[i] = this.pool.borrowShape()
+      console.log(this.pool)
+      console.log(this.figures[i].y)
+      this.container.addChild(this.figures[i])
+    }
   }
 
   increaseGravityValue() {
@@ -47,18 +51,18 @@ export class Model {
 
   update(delta: number) {
     if (this.figures.length < this.figuresPerSec) {
-      for (let i = 0; i < this.figuresPerSec; i++) {
-        this.createShapes(i)
-      }
+      this.createShapes()
     } else {
-      for (let i = 0; i < this.figuresPerSec; i++) {
-        if (this.figures[i].y <= 550) {
-          this.figures[i].update(this.gravity, delta)
-        } else {
-          this.container.removeChild(this.figures[i])
-          this.figures.splice(i, 1)
-          this.pool.returnShape(this.figures[i])
-        }
+      this.figures.forEach((figure) => {
+        figure.update(this.gravity, delta)
+      })
+    }
+    for (let i = 0; i < this.figures.length; i++) {
+      if (this.figures[i].y > 430) {
+        this.container.removeChild(this.figures[i])
+        this.figures[i].y = -5
+        this.pool.returnShape(this.figures[i])
+        this.figures.splice(i, 1)
       }
     }
   }

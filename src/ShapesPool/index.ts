@@ -19,19 +19,19 @@ export class ShapesPool {
       switch (type) {
         case 'ellipse':
           const ellipse = new Ellipse(
-            Utils.generateRandomInteger(40, 250),
+            Utils.generateRandomInteger(40, 180),
             -10,
             Utils.randomColor(),
           )
           this.shapes.push(ellipse)
           break
         case 'circle':
-          const circle = new Circle(Utils.generateRandomInteger(40, 250), -10, Utils.randomColor())
+          const circle = new Circle(Utils.generateRandomInteger(30, 200), -10, Utils.randomColor())
           this.shapes.push(circle)
           break
         case 'polygon':
           const polygon = new Polygon(
-            Utils.generateRandomInteger(40, 380),
+            Utils.generateRandomInteger(30, 380),
             -10,
             Utils.randomColor(),
           )
