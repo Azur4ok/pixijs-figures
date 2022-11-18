@@ -22,7 +22,6 @@ export class Model {
 
   createShape(x: number, y: number, container: Container) {
     const figure = this.pool.borrowShape()
-    console.log(figure.x, x)
 
     figure.x = x
     figure.y = y

@@ -59,8 +59,6 @@ export class Area {
   }
 
   private updateOccupiedArea() {
-    console.log(this.controller.getOccupiedArea())
-
     this.numberOfOccupiedArea.textContent = ` ${this.controller.getOccupiedArea()}`
   }
 
