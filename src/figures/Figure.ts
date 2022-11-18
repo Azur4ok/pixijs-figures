@@ -16,8 +16,10 @@ export abstract class Figure extends Graphics {
     this.beginFill(this.color)
     this.draw()
     this.endFill()
+  }
 
-    this.addListener('pointerdown', () => this.clear())
+  bindListener(handler: () => void) {
+    this.addListener('pointerdown', handler)
   }
 
   abstract draw(): void

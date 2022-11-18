@@ -1,28 +1,45 @@
 import { Figure } from '../figures/Figure'
-import { Container } from 'pixi.js'
 import { DEFAULT_GRAVITY_VALUE, DEFAULT_FIGURES_PER_SEC_VALUE } from '../constants'
 import { ShapesPool } from './../ShapesPool/index'
+import { Container } from 'pixi.js'
 
 export class Model {
   public figures: Figure[] = []
   public gravity: number = DEFAULT_GRAVITY_VALUE
   public figuresPerSec: number = DEFAULT_FIGURES_PER_SEC_VALUE
-  container: Container
-  pool: ShapesPool
+  private pool: ShapesPool
 
   constructor() {
-    this.container = new Container()
     this.pool = new ShapesPool()
   }
 
-  createShapes() {
+  createShapes(container: Container) {
     for (let i = this.figures.length; i < this.figuresPerSec; i++) {
-      console.log(this.figures.length)
       this.figures[i] = this.pool.borrowShape()
-      console.log(this.pool)
-      console.log(this.figures[i].y)
-      this.container.addChild(this.figures[i])
+      container.addChild(this.figures[i])
     }
+  }
+
+  createShape(x: number, y: number, container: Container) {
+    const figure = this.pool.borrowShape()
+    console.log(figure.x, x)
+
+    figure.x = x
+    figure.y = y
+    container.addChild(figure)
+    this.figures.push(figure)
+  }
+
+  removeShape(shape: Figure, index: number) {
+    shape.y = -10
+    this.pool.returnShape(shape)
+    this.figures.splice(index, 1)
+    this.figures.forEach((figure, index) => {
+      figure.addListener('pointerdown', () => {
+        figure.clear()
+        this.removeShape(figure, index)
+      })
+    })
   }
 
   increaseGravityValue() {
@@ -43,27 +60,5 @@ export class Model {
   decreaseFiguresPerSec() {
     this.figuresPerSec -= 1
     return this.figuresPerSec
-  }
-
-  getContainer() {
-    return this.container
-  }
-
-  update(delta: number) {
-    if (this.figures.length < this.figuresPerSec) {
-      this.createShapes()
-    } else {
-      this.figures.forEach((figure) => {
-        figure.update(this.gravity, delta)
-      })
-    }
-    for (let i = 0; i < this.figures.length; i++) {
-      if (this.figures[i].y > 430) {
-        this.container.removeChild(this.figures[i])
-        this.figures[i].y = -5
-        this.pool.returnShape(this.figures[i])
-        this.figures.splice(i, 1)
-      }
-    }
   }
 }

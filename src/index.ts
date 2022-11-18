@@ -8,7 +8,6 @@ const app = new Application({
   height: canvasConfig.height,
   antialias: true,
   resolution: window.devicePixelRatio || 1,
-  backgroundColor: '#ededed',
   view: document.getElementById('canvas') as HTMLCanvasElement,
 })
 
