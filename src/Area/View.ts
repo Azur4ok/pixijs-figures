@@ -63,19 +63,41 @@ export class Area {
   }
 
   private onIncreaseGravityClick() {
-    this.updateGravityTitle(this.controller.handleIncreaseGravityClick())
+    this.updateGravityTitle(this.controller.handleEnv({
+      subject: 'gravity',
+      operation: 'add',
+      value: 1,
+    }))
+    // this.updateGravityTitle(this.controller.handleIncreaseGravityClick())
   }
 
   private onDecreaseGravityClick() {
-    this.updateGravityTitle(this.controller.handleDecreaseGravityClick())
+    this.updateGravityTitle(this.controller.handleEnv({
+      subject: 'gravity',
+      operation: 'subtract',
+      value: 1,
+    }))
+    // this.updateGravityTitle(this.controller.handleDecreaseGravityClick())
   }
 
   private onIncreaseFiguresPerSec() {
-    this.updateFiguresPerSecTitle(this.controller.handleIncreaseShapesPerSec())
+    this.updateFiguresPerSecTitle(
+        this.controller.handleEnv({
+          subject: 'figuresPerSec',
+          operation: 'add',
+          value: 1,
+        })
+    )
   }
 
   private onDecreaseFiguresPerSec() {
-    this.updateFiguresPerSecTitle(this.controller.handleDecreaseShapesPerSec())
+    this.updateFiguresPerSecTitle(
+        this.controller.handleEnv({
+          subject: 'figuresPerSec',
+          operation: 'subtract',
+          value: 1,
+        })
+    )
   }
 
   updateFiguresPerSecTitle(value: number) {

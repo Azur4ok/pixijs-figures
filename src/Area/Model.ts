@@ -2,6 +2,7 @@ import { Figure } from '../figures/Figure'
 import { DEFAULT_GRAVITY_VALUE, DEFAULT_FIGURES_PER_SEC_VALUE } from '../constants'
 import { ShapesPool } from './../ShapesPool/index'
 import { Container } from 'pixi.js'
+import {EnvMutation} from "./Controller";
 
 export class Model {
   public figures: Figure[] = []
@@ -41,23 +42,21 @@ export class Model {
     })
   }
 
-  increaseGravityValue() {
-    this.gravity += 1
-    return this.gravity
-  }
 
-  decreaseGravityValue() {
-    this.gravity -= 1
-    return this.gravity
-  }
+  changeEnv(data: EnvMutation){
+    const { subject, value, operation } = data;
 
-  increaseFiguresPerSec() {
-    this.figuresPerSec += 1
-    return this.figuresPerSec
-  }
+    switch (operation) {
+      case 'add':
+        this[subject] += value;
+        break;
+      case 'subtract':
+        this[subject] -= value;
+        break;
+      default:
+        return this[subject];
+    }
 
-  decreaseFiguresPerSec() {
-    this.figuresPerSec -= 1
-    return this.figuresPerSec
+    return this[subject];
   }
 }

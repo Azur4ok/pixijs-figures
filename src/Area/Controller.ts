@@ -1,6 +1,12 @@
 import { Container } from 'pixi.js'
 import { Model } from './Model'
 
+export interface EnvMutation {
+  subject: 'figuresPerSec' | 'gravity',
+  operation: string
+  value: number
+}
+
 export class Controller {
   private model: Model
   public container: Container
@@ -36,26 +42,15 @@ export class Controller {
     }
   }
 
-  public handleIncreaseGravityClick(): number {
-    return this.model.increaseGravityValue()
+  public handleEnv(data: EnvMutation){
+    return this.model.changeEnv(data)
   }
 
-  public handleDecreaseGravityClick(): number {
-    return this.model.decreaseGravityValue()
-  }
-
-  public handleIncreaseShapesPerSec(): number {
-    return this.model.increaseFiguresPerSec()
-  }
-
-  public handleDecreaseShapesPerSec(): number {
-    return this.model.decreaseFiguresPerSec()
-  }
 
   update(delta: number): void {
-    if (this.model.figures.length < this.model.figuresPerSec) {
-      this.model.createShapes(this.container)
-    } else {
+    if (this.model.figures.length < this.model.figuresPerSec) this.model.createShapes(this.container)
+
+    else {
       this.model.figures.forEach((figure, i) => {
         figure.removeAllListeners('pointerdown')
         figure.update(this.model.gravity, delta)
