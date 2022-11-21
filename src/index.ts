@@ -1,6 +1,6 @@
 import { Application } from 'pixi.js'
-import { Area } from './Area/View'
 
+import { Area } from './Area/View'
 import { canvasConfig } from './constants'
 
 const app = new Application({
