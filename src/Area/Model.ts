@@ -2,7 +2,7 @@ import { Figure } from '../figures/Figure'
 import { DEFAULT_GRAVITY_VALUE, DEFAULT_FIGURES_PER_SEC_VALUE } from '../constants'
 import { ShapesPool } from './../ShapesPool/index'
 import { Container } from 'pixi.js'
-import {EnvMutation} from "./Controller";
+import { EnvMutation } from '../constants'
 
 export class Model {
   public figures: Figure[] = []
@@ -42,21 +42,20 @@ export class Model {
     })
   }
 
-
-  changeEnv(data: EnvMutation){
-    const { subject, value, operation } = data;
+  changeEnv(data: EnvMutation) {
+    const { subject, value, operation } = data
 
     switch (operation) {
       case 'add':
-        this[subject] += value;
-        break;
+        this[subject] += value
+        break
       case 'subtract':
-        this[subject] -= value;
-        break;
+        this[subject] -= value
+        break
       default:
-        return this[subject];
+        return this[subject]
     }
 
-    return this[subject];
+    return this[subject]
   }
 }

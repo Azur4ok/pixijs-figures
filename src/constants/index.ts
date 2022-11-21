@@ -1,3 +1,20 @@
+import { Figure } from "../figures"
+
+export interface EnvMutation {
+  subject: 'figuresPerSec' | 'gravity'
+  operation: string
+  value: number
+}
+
+export interface Shape extends Figure {
+  new (randomInteger: number, y: number, color: number): Shape
+}
+
+export interface ShapeInitialData {
+  size: [number, number]
+  y: number
+}
+
 export enum canvasConfig {
   width = 400,
   height = 400,

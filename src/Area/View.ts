@@ -68,7 +68,6 @@ export class Area {
       operation: 'add',
       value: 1,
     }))
-    // this.updateGravityTitle(this.controller.handleIncreaseGravityClick())
   }
 
   private onDecreaseGravityClick() {
@@ -77,7 +76,6 @@ export class Area {
       operation: 'subtract',
       value: 1,
     }))
-    // this.updateGravityTitle(this.controller.handleDecreaseGravityClick())
   }
 
   private onIncreaseFiguresPerSec() {

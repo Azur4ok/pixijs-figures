@@ -1,11 +1,6 @@
 import { Container } from 'pixi.js'
+import { EnvMutation } from '../constants'
 import { Model } from './Model'
-
-export interface EnvMutation {
-  subject: 'figuresPerSec' | 'gravity',
-  operation: string
-  value: number
-}
 
 export class Controller {
   private model: Model
