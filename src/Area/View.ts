@@ -4,10 +4,9 @@ import { DEFAULT_FIGURES_PER_SEC_VALUE, DEFAULT_GRAVITY_VALUE } from '../constan
 import { Controller } from './Controller'
 
 export class Area {
+  public app: Application
   private width: number
   private height: number
-  private app: Application
-  private container: Container
   private controller: Controller
 
   public gravityValue: HTMLElement
@@ -20,12 +19,19 @@ export class Area {
   public increaseFiguresPerSecButton: HTMLElement
   public decreaseFiguresPerSecButton: HTMLElement
 
-  constructor(app: Application) {
-    this.app = app
-    this.width = app.renderer.width
-    this.height = app.renderer.height
-    this.controller = new Controller()
-    this.container = this.controller.container
+  constructor(width: number, height: number) {
+    this.width = width
+    this.height = height
+
+    this.app = new Application({
+      width: this.width,
+      height: this.height,
+      antialias: true,
+    })
+
+    document.getElementById('canvas')?.appendChild(this.app.view as HTMLCanvasElement)
+
+    this.controller = new Controller(this)
 
     this.gravityValue = document.getElementById('gravity-value')!
     this.numberOfCurrentShapes = document.getElementById('current-shapes')!
@@ -40,10 +46,13 @@ export class Area {
     this.increaseFiguresPerSecButton = document.getElementById('increase-figures-per-sec')!
     this.decreaseFiguresPerSecButton = document.getElementById('decrease-figures-per-sec')!
 
-    this.container.addChild(this.createBackground())
-    this.app.stage.addChild(this.container)
+    this.app.stage.addChild(this.createBackground())
 
     this.bindEventListeners()
+  }
+
+  init(): void {
+    this.app.ticker.add(this.update, this)
   }
 
   createBackground(): Graphics {
@@ -51,59 +60,70 @@ export class Area {
     background.beginFill(0x808080)
     background.drawRect(0, 0, this.width, this.height)
     background.endFill()
+
+    background.interactive = true
+    background.cursor = 'pointer'
+    background.addListener('pointerdown', (event: FederatedPointerEvent) => {
+      const { x, y } = background.toLocal(event.global)
+      this.controller.createRandomShape({ x: Math.round(x), y: Math.round(y) })
+    })
     return background
   }
 
-  private updateFiguresOnArea() {
-    this.numberOfCurrentShapes.textContent = ` ${this.controller.getFiguresOnArea()}`
-  }
+  // private updateFiguresOnArea() {
+  //   this.numberOfCurrentShapes.textContent = ` ${this.controller.getFiguresOnArea()}`
+  // }
 
-  private updateOccupiedArea() {
-    this.numberOfOccupiedArea.textContent = ` ${this.controller.getOccupiedArea()}`
-  }
+  // private updateOccupiedArea() {
+  //   this.numberOfOccupiedArea.textContent = ` ${this.controller.getOccupiedArea()}`
+  // }
 
-  private onIncreaseGravityClick() {
-    this.updateGravityTitle(this.controller.handleEnv({
-      subject: 'gravity',
-      operation: 'add',
-      value: 1,
-    }))
-  }
-
-  private onDecreaseGravityClick() {
-    this.updateGravityTitle(this.controller.handleEnv({
-      subject: 'gravity',
-      operation: 'subtract',
-      value: 1,
-    }))
-  }
-
-  private onIncreaseFiguresPerSec() {
-    this.updateFiguresPerSecTitle(
-        this.controller.handleEnv({
-          subject: 'figuresPerSec',
-          operation: 'add',
-          value: 1,
-        })
-    )
-  }
-
-  private onDecreaseFiguresPerSec() {
-    this.updateFiguresPerSecTitle(
-        this.controller.handleEnv({
-          subject: 'figuresPerSec',
-          operation: 'subtract',
-          value: 1,
-        })
-    )
-  }
-
-  updateFiguresPerSecTitle(value: number) {
+  private updateFiguresPerSecTitle(value: number) {
     this.numberOfShapesPerSec.textContent = `Number of shapes per sec: ${value}`
   }
 
   private updateGravityTitle(value: number) {
     this.gravityValue.textContent = `Gravity value: ${value}`
+  }
+
+  private onIncreaseGravityClick() {
+    this.updateGravityTitle(
+      this.controller.handleEnv({
+        subject: 'gravity',
+        operation: 'add',
+        value: 1,
+      }),
+    )
+  }
+
+  private onDecreaseGravityClick() {
+    this.updateGravityTitle(
+      this.controller.handleEnv({
+        subject: 'gravity',
+        operation: 'subtract',
+        value: 1,
+      }),
+    )
+  }
+
+  private onIncreaseFiguresPerSec() {
+    this.updateFiguresPerSecTitle(
+      this.controller.handleEnv({
+        subject: 'figuresPerSec',
+        operation: 'add',
+        value: 1,
+      }),
+    )
+  }
+
+  private onDecreaseFiguresPerSec() {
+    this.updateFiguresPerSecTitle(
+      this.controller.handleEnv({
+        subject: 'figuresPerSec',
+        operation: 'subtract',
+        value: 1,
+      }),
+    )
   }
 
   private bindEventListeners() {
@@ -119,16 +139,11 @@ export class Area {
     this.increaseFiguresPerSecButton.addEventListener('click', () => {
       this.onIncreaseFiguresPerSec()
     })
-
-    this.app.stage.addListener('pointerdown', (event: FederatedPointerEvent) => {
-      const { x, y } = this.container.toLocal(event.global)
-      this.controller.createRandomShape(x - 40, y)
-    })
   }
 
   update(delta: number) {
-    this.updateOccupiedArea()
-    this.updateFiguresOnArea()
+    // this.updateOccupiedArea()
+    // this.updateFiguresOnArea()
     this.controller.update(delta)
   }
 }

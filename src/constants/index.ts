@@ -1,4 +1,4 @@
-import { Figure } from "../figures"
+import { Figure } from '../figures'
 
 export interface EnvMutation {
   subject: 'figuresPerSec' | 'gravity'
@@ -10,14 +10,26 @@ export interface Shape extends Figure {
   new (randomInteger: number, y: number, color: number): Shape
 }
 
+export interface figureObject {
+  name: string
+  figure: Figure
+  speed: number
+  velocityY: number
+}
+
+export interface Coords {
+  x: number
+  y: number
+}
+
 export interface ShapeInitialData {
   size: [number, number]
   y: number
 }
 
 export enum canvasConfig {
-  width = 400,
-  height = 400,
+  width = 800,
+  height = 600,
 }
 
 export enum ellipseConfig {

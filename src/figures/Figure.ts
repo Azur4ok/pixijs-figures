@@ -18,13 +18,6 @@ export abstract class Figure extends Graphics {
     this.endFill()
   }
 
-  bindListener(handler: () => void) {
-    this.addListener('pointerdown', handler)
-  }
-
   abstract draw(): void
 
-  update(gravity: number, delta: number) {
-    this.y += gravity * delta
-  }
 }

@@ -28,24 +28,24 @@ export class ShapesPool {
       Utils.randomColor(),
     )
 
-    return this.shapes.push(shapeImplementation)
+     this.shapes.push(shapeImplementation)
   }
 
   private addShapes(amount: number, type: string) {
     switch (type) {
       case 'ellipse':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Ellipse as unknown as Shape, { size: [40, 180], y: -10 })
+          this.generateShapeByConstructor(Ellipse as unknown as Shape, { size: [40, 760], y: -10 })
         }
         break
       case 'circle':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Circle as unknown as Shape, { size: [30, 200], y: -10 })
+          this.generateShapeByConstructor(Circle as unknown as Shape, { size: [40, 770], y: -10 })
         }
         break
       case 'polygon':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Polygon as unknown as Shape, { size: [30, 380], y: -10 })
+          this.generateShapeByConstructor(Polygon as unknown as Shape, { size: [30, 780], y: -10 })
         }
         break
     }

@@ -5,6 +5,7 @@ export class Circle extends Figure {
   private static radius: number = RADIUS
 
   draw(): void {
+    this.x = this.x / 2
     this.drawCircle(this.x, this.y, Circle.radius)
     this.area = this.calculateArea()
   }

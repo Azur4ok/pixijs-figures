@@ -5,6 +5,7 @@ export class Ellipse extends Figure {
   private static WIDTH: number = ellipseConfig.WIDTH
   private static HEIGHT: number = ellipseConfig.HEIGHT
   draw(): void {
+    this.x = this.x / 2
     this.drawEllipse(this.x, this.y, Ellipse.WIDTH, Ellipse.HEIGHT)
     this.area = this.calculateArea()
   }
