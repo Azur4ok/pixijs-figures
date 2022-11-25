@@ -26340,12 +26340,12 @@ var canvasConfig;
 })(canvasConfig || (canvasConfig = {}));
 var ellipseConfig;
 (function (ellipseConfig) {
-    ellipseConfig[ellipseConfig["WIDTH"] = 30] = "WIDTH";
-    ellipseConfig[ellipseConfig["HEIGHT"] = 20] = "HEIGHT";
+    ellipseConfig[ellipseConfig["WIDTH"] = 90] = "WIDTH";
+    ellipseConfig[ellipseConfig["HEIGHT"] = 70] = "HEIGHT";
 })(ellipseConfig || (ellipseConfig = {}));
 const DEFAULT_GRAVITY_VALUE = 2;
 const DEFAULT_FIGURES_PER_SEC_VALUE = 1;
-const RADIUS = 25;
+const RADIUS = 100;
 
 ;// CONCATENATED MODULE: ./src/figures/Figure.ts
 
@@ -26369,9 +26369,15 @@ class Figure extends Graphics {
 
 class Circle_Circle extends Figure {
     draw() {
-        this.x = this.x / 2;
+        this.x = Math.round(this.x / 2);
         this.drawCircle(this.x, this.y, Circle_Circle.radius);
         this.area = this.calculateArea();
+    }
+    setXCoord(x) {
+        this.x = Math.floor(x / 2);
+    }
+    setYCoord(y) {
+        this.y = y;
     }
     calculateArea() {
         return Math.round(Math.PI * Math.pow(Circle_Circle.radius, 2));
@@ -26387,6 +26393,12 @@ class Ellipse_Ellipse extends Figure {
         this.x = this.x / 2;
         this.drawEllipse(this.x, this.y, Ellipse_Ellipse.WIDTH, Ellipse_Ellipse.HEIGHT);
         this.area = this.calculateArea();
+    }
+    setXCoord(x) {
+        this.x = Math.floor(x / 2);
+    }
+    setYCoord(y) {
+        this.y = y;
     }
     calculateArea() {
         return Math.round(Math.PI * Ellipse_Ellipse.WIDTH * Ellipse_Ellipse.HEIGHT);
@@ -26420,6 +26432,12 @@ class Polygon_Polygon extends Figure {
         const path = peacks.reduce((acc, value) => acc.concat(value), []);
         this.drawPolygon(path);
         this.area = this.calculateArea(peacks);
+    }
+    setXCoord(x) {
+        this.x = x;
+    }
+    setYCoord(y) {
+        this.y = y;
     }
     calculateArea(peacks) {
         let area = 0;
@@ -26501,7 +26519,7 @@ class ShapesPool {
 
 class Model {
     constructor() {
-        this.figures = [];
+        this.figures = {};
         this.gravity = DEFAULT_GRAVITY_VALUE;
         this.figuresPerSec = DEFAULT_FIGURES_PER_SEC_VALUE;
         this.counterToCreate = 0;
@@ -26514,20 +26532,22 @@ class Model {
     }
     createRandomShape(coords) {
         let shapeName = `shape${Math.floor(Math.random() * 300)}`;
-        for (let i = 0; i < this.figures.length; i++) {
-            if (this.figures[i]['name'] === shapeName) {
-                shapeName = `shape${Math.floor(Math.random() * 300)}`;
-            }
+        while (this.figures[shapeName]) {
+            shapeName = `shape${Math.floor(Math.random() * 300)}`;
         }
+        let velocity = 0;
         const shape = this.pool.borrowShape();
+        console.log(shape.x, coords === null || coords === void 0 ? void 0 : coords.x);
         if (coords) {
-            shape.x = coords.x;
-            shape.y = coords.y;
+            velocity = coords.y;
+            shape.setXCoord(coords.x);
+            shape.setYCoord(coords.y);
         }
+        console.log(shape.x);
         return {
             name: shapeName,
             figure: shape,
-            velocityY: 0,
+            velocityY: velocity,
             speed: 0,
         };
     }
@@ -26549,32 +26569,33 @@ class Model {
         return this[subject];
     }
     update(delta) {
-        for (let i = 0; i < this.figures.length; i++) {
-            if (this.figures[i].velocityY > 600 + this.figures[i].figure.height) {
-                this.pool.returnShape(this.figures[i].figure);
-                this.figures.splice(i, 1);
+        for (let name in this.figures) {
+            if (this.figures[name].velocityY > 600 + this.figures[name].figure.height) {
+                this.pool.returnShape(this.figures[name].figure);
+                delete this.figures[name];
             }
             else {
-                this.figures[i].speed += delta * this.gravity;
-                this.figures[i].velocityY += this.figures[i].speed + (this.gravity * delta * delta) / 2;
+                this.figures[name].speed += delta * this.gravity;
+                this.figures[name].velocityY += this.figures[name].speed + (this.gravity * delta) / 2;
             }
-            if (this.counterToCreate > 1 / this.figuresPerSec) {
-                const newShape = this.createRandomShape();
-                this.figures[i] = newShape;
-                this.counterToCreate = 0;
-            }
-            else {
-                this.counterToCreate += delta;
-            }
-            if (this.randomShapeCoords !== null) {
-                this.figures[i] = this.createRandomShape(this.randomShapeCoords);
-                this.randomShapeCoords = null;
-            }
-            if (this.indexToDestroy !== null && this.figures[this.indexToDestroy]) {
-                this.pool.returnShape(this.figures[this.indexToDestroy].figure);
-                this.figures.splice(this.indexToDestroy, 1);
-                this.indexToDestroy = null;
-            }
+        }
+        if (this.counterToCreate > 1 / this.figuresPerSec) {
+            const newShape = this.createRandomShape();
+            this.figures[newShape.name] = newShape;
+            this.counterToCreate = 0;
+        }
+        else {
+            this.counterToCreate += delta;
+        }
+        if (this.randomShapeCoords !== null) {
+            const newShape = this.createRandomShape(this.randomShapeCoords);
+            this.figures[newShape.name] = newShape;
+            this.randomShapeCoords = null;
+        }
+        if (this.indexToDestroy !== null && this.figures[this.indexToDestroy]) {
+            this.pool.returnShape(this.figures[this.indexToDestroy].figure);
+            delete this.figures[this.indexToDestroy];
+            this.indexToDestroy = null;
         }
         return this.figures;
     }
@@ -26588,16 +26609,9 @@ class Controller {
         this.model = new Model();
         this.view = view;
     }
-    // public getFiguresOnArea() {
-    //   return this.model.figures.filter((figure) => figure.y < 600).length
-    // }
-    // public getOccupiedArea() {
-    //   let counter: number = 0
-    //   for (let i = 0; i < this.model.figures.length; i++) {
-    //     counter += this.model.figures[i].area
-    //   }
-    //   return counter
-    // }
+    clickHandler(name) {
+        this.model.setIndexToDestroy(name);
+    }
     handleEnv(data) {
         return this.model.changeEnv(data);
     }
@@ -26605,11 +26619,7 @@ class Controller {
         this.model.setNewRandomShapeCoords(coords);
     }
     update(delta) {
-        // for (let i = 0; i < this.model.figures.length; i++) {
-        //   if (this.model.figures[i].y > 500) {
-        //     this.model.removeShape(this.model.figures[i], i)
-        //   }
-        // }
+        return this.model.update(delta);
     }
 }
 
@@ -26620,6 +26630,9 @@ class Controller {
 class Area {
     constructor(width, height) {
         var _a;
+        this.totalArea = 0;
+        this.figuresOnArea = 0;
+        this.shapes = {};
         this.width = width;
         this.height = height;
         this.app = new Application({
@@ -26654,16 +26667,30 @@ class Area {
         background.cursor = 'pointer';
         background.addListener('pointerdown', (event) => {
             const { x, y } = background.toLocal(event.global);
-            this.controller.createRandomShape({ x: Math.round(x), y: Math.round(y) });
+            this.controller.createRandomShape({ x: Math.floor(x), y: Math.floor(y) });
         });
         return background;
     }
-    // private updateFiguresOnArea() {
-    //   this.numberOfCurrentShapes.textContent = ` ${this.controller.getFiguresOnArea()}`
-    // }
-    // private updateOccupiedArea() {
-    //   this.numberOfOccupiedArea.textContent = ` ${this.controller.getOccupiedArea()}`
-    // }
+    createElement(element) {
+        const figure = element.figure;
+        figure.interactive = true;
+        figure.cursor = 'pointer';
+        figure.name = element.name;
+        figure.addListener('pointerdown', () => {
+            this.controller.clickHandler(element.name);
+        });
+        this.shapes[element.name] = figure;
+        this.app.stage.addChild(figure);
+        if (figure.area) {
+            this.totalArea += figure.area;
+        }
+    }
+    updateFiguresOnArea(value) {
+        this.numberOfCurrentShapes.textContent = ` ${value}`;
+    }
+    updateOccupiedArea(value) {
+        this.numberOfOccupiedArea.textContent = ` ${value}`;
+    }
     updateFiguresPerSecTitle(value) {
         this.numberOfShapesPerSec.textContent = `Number of shapes per sec: ${value}`;
     }
@@ -26712,10 +26739,32 @@ class Area {
             this.onIncreaseFiguresPerSec();
         });
     }
+    updateView(delta) {
+        const figures = this.controller.update(delta);
+        for (const name in figures) {
+            if (!this.shapes[name]) {
+                this.createElement(figures[name]);
+            }
+        }
+        for (const name in this.shapes) {
+            if (figures[name]) {
+                this.shapes[name].y = figures[name].velocityY;
+                if (this.shapes[name].y + this.shapes[name].height > 10) {
+                    this.figuresOnArea += 1;
+                }
+            }
+            else {
+                this.app.stage.removeChild(this.shapes[name]);
+                this.totalArea -= this.shapes[name].area;
+                delete this.shapes[name];
+            }
+        }
+        this.updateFiguresOnArea(this.figuresOnArea);
+        this.updateOccupiedArea(this.totalArea);
+        this.figuresOnArea = 0;
+    }
     update(delta) {
-        // this.updateOccupiedArea()
-        // this.updateFiguresOnArea()
-        this.controller.update(delta);
+        this.updateView(delta);
     }
 }
 
