@@ -17,7 +17,7 @@ export abstract class Figure extends Graphics {
     this.draw()
     this.endFill()
   }
-
+  abstract setXCoord(x: number): void
+  abstract setYCoord(y: number): void
   abstract draw(): void
-
 }

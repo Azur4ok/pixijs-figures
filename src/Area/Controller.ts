@@ -1,4 +1,4 @@
-import { Coords, EnvMutation } from '../constants'
+import { Coords, EnvMutation, FigureObject, FigureRecord } from '../constants'
 import { Model } from './Model'
 import { Area } from './View'
 
@@ -13,17 +13,9 @@ export class Controller {
     this.view = view
   }
 
-  // public getFiguresOnArea() {
-  //   return this.model.figures.filter((figure) => figure.y < 600).length
-  // }
-
-  // public getOccupiedArea() {
-  //   let counter: number = 0
-  //   for (let i = 0; i < this.model.figures.length; i++) {
-  //     counter += this.model.figures[i].area
-  //   }
-  //   return counter
-  // }
+  public clickHandler(name: string): void {
+    this.model.setIndexToDestroy(name)
+  }
 
   public handleEnv(data: EnvMutation) {
     return this.model.changeEnv(data)
@@ -33,11 +25,7 @@ export class Controller {
     this.model.setNewRandomShapeCoords(coords)
   }
 
-  update(delta: number): void {
-    // for (let i = 0; i < this.model.figures.length; i++) {
-    //   if (this.model.figures[i].y > 500) {
-    //     this.model.removeShape(this.model.figures[i], i)
-    //   }
-    // }
+  update(delta: number): FigureRecord {
+    return this.model.update(delta)
   }
 }

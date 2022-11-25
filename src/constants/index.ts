@@ -10,11 +10,19 @@ export interface Shape extends Figure {
   new (randomInteger: number, y: number, color: number): Shape
 }
 
-export interface figureObject {
+export interface FigureObject {
   name: string
   figure: Figure
   speed: number
   velocityY: number
+}
+
+export interface FigureRecord {
+  [key: string]: FigureObject
+}
+
+export interface ShapeRecord {
+  [key: string]: Figure
 }
 
 export interface Coords {
@@ -33,8 +41,8 @@ export enum canvasConfig {
 }
 
 export enum ellipseConfig {
-  WIDTH = 30,
-  HEIGHT = 20,
+  WIDTH = 90,
+  HEIGHT = 70,
 }
 
 export interface CurrentData {
@@ -46,4 +54,4 @@ export interface CurrentData {
 
 export const DEFAULT_GRAVITY_VALUE = 2
 export const DEFAULT_FIGURES_PER_SEC_VALUE = 1
-export const RADIUS = 25
+export const RADIUS = 100

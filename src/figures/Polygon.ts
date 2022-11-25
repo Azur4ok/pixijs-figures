@@ -25,6 +25,13 @@ export class Polygon extends Figure {
     this.area = this.calculateArea(peacks)
   }
 
+  setXCoord(x: number): void {
+    this.x = x
+  }
+  setYCoord(y: number): void {
+   this.y = y
+  }
+
   public calculateArea(peacks: number[][]): number {
     let area = 0
     for (let i = 0; i < peacks.length; i++) {

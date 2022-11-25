@@ -1,13 +1,21 @@
-import { Application, Container, FederatedPointerEvent, Graphics } from 'pixi.js'
+import { Application, FederatedPointerEvent, Graphics } from 'pixi.js'
 
-import { DEFAULT_FIGURES_PER_SEC_VALUE, DEFAULT_GRAVITY_VALUE } from '../constants'
+import {
+  DEFAULT_FIGURES_PER_SEC_VALUE,
+  DEFAULT_GRAVITY_VALUE,
+  FigureObject,
+  ShapeRecord,
+} from '../constants'
 import { Controller } from './Controller'
 
 export class Area {
   public app: Application
+  private controller: Controller
   private width: number
   private height: number
-  private controller: Controller
+  private totalArea: number = 0
+  private figuresOnArea: number = 0
+  private shapes: ShapeRecord = {}
 
   public gravityValue: HTMLElement
   public numberOfCurrentShapes: HTMLElement
@@ -55,7 +63,7 @@ export class Area {
     this.app.ticker.add(this.update, this)
   }
 
-  createBackground(): Graphics {
+  private createBackground(): Graphics {
     const background = new Graphics()
     background.beginFill(0x808080)
     background.drawRect(0, 0, this.width, this.height)
@@ -65,18 +73,34 @@ export class Area {
     background.cursor = 'pointer'
     background.addListener('pointerdown', (event: FederatedPointerEvent) => {
       const { x, y } = background.toLocal(event.global)
-      this.controller.createRandomShape({ x: Math.round(x), y: Math.round(y) })
+      this.controller.createRandomShape({ x: Math.floor(x), y: Math.floor(y) })
     })
     return background
   }
 
-  // private updateFiguresOnArea() {
-  //   this.numberOfCurrentShapes.textContent = ` ${this.controller.getFiguresOnArea()}`
-  // }
+  private createElement(element: FigureObject) {
+    const figure = element.figure
+    figure.interactive = true
+    figure.cursor = 'pointer'
+    figure.name = element.name
+    figure.addListener('pointerdown', () => {
+      this.controller.clickHandler(element.name)
+    })
+    this.shapes[element.name] = figure
+    this.app.stage.addChild(figure)
 
-  // private updateOccupiedArea() {
-  //   this.numberOfOccupiedArea.textContent = ` ${this.controller.getOccupiedArea()}`
-  // }
+    if (figure.area) {
+      this.totalArea += figure.area
+    }
+  }
+
+  private updateFiguresOnArea(value: number): void {
+    this.numberOfCurrentShapes.textContent = ` ${value}`
+  }
+
+  private updateOccupiedArea(value: number): void {
+    this.numberOfOccupiedArea.textContent = ` ${value}`
+  }
 
   private updateFiguresPerSecTitle(value: number) {
     this.numberOfShapesPerSec.textContent = `Number of shapes per sec: ${value}`
@@ -141,9 +165,34 @@ export class Area {
     })
   }
 
+  private updateView(delta: number): void {
+    const figures = this.controller.update(delta)
+
+    for (const name in figures) {
+      if (!this.shapes[name]) {
+        this.createElement(figures[name])
+      }
+    }
+
+    for (const name in this.shapes) {
+      if (figures[name]) {
+        this.shapes[name].y = figures[name].velocityY
+
+        if (this.shapes[name].y + this.shapes[name].height > 10) {
+          this.figuresOnArea += 1
+        }
+      } else {
+        this.app.stage.removeChild(this.shapes[name])
+        this.totalArea -= this.shapes[name].area
+        delete this.shapes[name]
+      }
+    }
+    this.updateFiguresOnArea(this.figuresOnArea)
+    this.updateOccupiedArea(this.totalArea)
+    this.figuresOnArea = 0
+  }
+
   update(delta: number) {
-    // this.updateOccupiedArea()
-    // this.updateFiguresOnArea()
-    this.controller.update(delta)
+    this.updateView(delta)
   }
 }

@@ -5,9 +5,17 @@ export class Circle extends Figure {
   private static radius: number = RADIUS
 
   draw(): void {
-    this.x = this.x / 2
+    this.x = Math.round(this.x / 2)
     this.drawCircle(this.x, this.y, Circle.radius)
     this.area = this.calculateArea()
+  }
+
+  setXCoord(x: number): void {
+    this.x = Math.floor(x / 2)
+  }
+
+  setYCoord(y: number): void {
+    this.y = y
   }
 
   calculateArea() {
