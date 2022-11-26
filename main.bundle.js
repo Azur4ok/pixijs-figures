@@ -26345,7 +26345,8 @@ var ellipseConfig;
 })(ellipseConfig || (ellipseConfig = {}));
 const DEFAULT_GRAVITY_VALUE = 2;
 const DEFAULT_FIGURES_PER_SEC_VALUE = 1;
-const RADIUS = 100;
+const RADIUS = 70;
+const DELTA = 1.0 / 4;
 
 ;// CONCATENATED MODULE: ./src/figures/Figure.ts
 
@@ -26480,17 +26481,17 @@ class ShapesPool {
         switch (type) {
             case 'ellipse':
                 for (let position = 0; position < amount; position++) {
-                    this.generateShapeByConstructor(Ellipse_Ellipse, { size: [40, 760], y: -10 });
+                    this.generateShapeByConstructor(Ellipse_Ellipse, { size: [40, 760], y: -50 });
                 }
                 break;
             case 'circle':
                 for (let position = 0; position < amount; position++) {
-                    this.generateShapeByConstructor(Circle_Circle, { size: [40, 770], y: -10 });
+                    this.generateShapeByConstructor(Circle_Circle, { size: [40, 770], y: -50 });
                 }
                 break;
             case 'polygon':
                 for (let position = 0; position < amount; position++) {
-                    this.generateShapeByConstructor(Polygon_Polygon, { size: [30, 780], y: -10 });
+                    this.generateShapeByConstructor(Polygon_Polygon, { size: [30, 780], y: -50 });
                 }
                 break;
         }
@@ -26537,13 +26538,11 @@ class Model {
         }
         let velocity = 0;
         const shape = this.pool.borrowShape();
-        console.log(shape.x, coords === null || coords === void 0 ? void 0 : coords.x);
         if (coords) {
             velocity = coords.y;
             shape.setXCoord(coords.x);
             shape.setYCoord(coords.y);
         }
-        console.log(shape.x);
         return {
             name: shapeName,
             figure: shape,
@@ -26579,7 +26578,7 @@ class Model {
                 this.figures[name].velocityY += this.figures[name].speed + (this.gravity * delta) / 2;
             }
         }
-        if (this.counterToCreate > 1 / this.figuresPerSec) {
+        if (this.counterToCreate > 15 / this.figuresPerSec) {
             const newShape = this.createRandomShape();
             this.figures[newShape.name] = newShape;
             this.counterToCreate = 0;
@@ -26603,6 +26602,7 @@ class Model {
 
 ;// CONCATENATED MODULE: ./src/Area/Controller.ts
 
+
 class Controller {
     constructor(view) {
         this.counter = 0;
@@ -26619,7 +26619,7 @@ class Controller {
         this.model.setNewRandomShapeCoords(coords);
     }
     update(delta) {
-        return this.model.update(delta);
+        return this.model.update(DELTA);
     }
 }
 
