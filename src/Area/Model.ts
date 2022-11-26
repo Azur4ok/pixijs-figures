@@ -35,15 +35,11 @@ export class Model {
     let velocity = 0
     const shape = this.pool.borrowShape()
 
-    console.log(shape.x, coords?.x)
-
     if (coords) {
       velocity = coords.y
       shape.setXCoord(coords.x)
       shape.setYCoord(coords.y)
     }
-
-    console.log(shape.x)
 
     return {
       name: shapeName,
@@ -85,7 +81,7 @@ export class Model {
       }
     }
 
-    if (this.counterToCreate > 1 / this.figuresPerSec) {
+    if (this.counterToCreate > 15 / this.figuresPerSec) {
       const newShape = this.createRandomShape()
 
       this.figures[newShape.name] = newShape

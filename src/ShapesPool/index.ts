@@ -35,17 +35,17 @@ export class ShapesPool {
     switch (type) {
       case 'ellipse':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Ellipse as unknown as Shape, { size: [40, 760], y: -10 })
+          this.generateShapeByConstructor(Ellipse as unknown as Shape, { size: [40, 760], y: -50 })
         }
         break
       case 'circle':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Circle as unknown as Shape, { size: [40, 770], y: -10 })
+          this.generateShapeByConstructor(Circle as unknown as Shape, { size: [40, 770], y: -50 })
         }
         break
       case 'polygon':
         for (let position = 0; position < amount; position++) {
-          this.generateShapeByConstructor(Polygon as unknown as Shape, { size: [30, 780], y: -10 })
+          this.generateShapeByConstructor(Polygon as unknown as Shape, { size: [30, 780], y: -50 })
         }
         break
     }

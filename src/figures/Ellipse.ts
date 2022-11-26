@@ -15,7 +15,7 @@ export class Ellipse extends Figure {
     this.x = Math.floor(x / 2)
   }
   setYCoord(y: number): void {
-      this.y = y
+    this.y = y
   }
   calculateArea(): number {
     return Math.round(Math.PI * Ellipse.WIDTH * Ellipse.HEIGHT)

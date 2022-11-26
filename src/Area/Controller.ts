@@ -1,4 +1,4 @@
-import { Coords, EnvMutation, FigureObject, FigureRecord } from '../constants'
+import { Coords, DELTA, EnvMutation, FigureRecord } from '../constants'
 import { Model } from './Model'
 import { Area } from './View'
 
@@ -26,6 +26,6 @@ export class Controller {
   }
 
   update(delta: number): FigureRecord {
-    return this.model.update(delta)
+    return this.model.update(DELTA)
   }
 }
