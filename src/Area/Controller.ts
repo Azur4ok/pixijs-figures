@@ -1,16 +1,11 @@
 import { Coords, DELTA, EnvMutation, FigureRecord } from '../constants'
 import { Model } from './Model'
-import { Area } from './View'
 
 export class Controller {
   private model: Model
-  private view: Area
 
-  public counter: number = 0
-
-  public constructor(view: Area) {
+  public constructor() {
     this.model = new Model()
-    this.view = view
   }
 
   public clickHandler(name: string): void {

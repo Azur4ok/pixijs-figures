@@ -39,7 +39,7 @@ export class Area {
 
     document.getElementById('canvas')?.appendChild(this.app.view as HTMLCanvasElement)
 
-    this.controller = new Controller(this)
+    this.controller = new Controller()
 
     this.gravityValue = document.getElementById('gravity-value')!
     this.numberOfCurrentShapes = document.getElementById('current-shapes')!
@@ -60,7 +60,7 @@ export class Area {
   }
 
   init(): void {
-    this.app.ticker.add(this.update, this)
+    this.app.ticker.add(this.updateView, this)
   }
 
   private createBackground(): Graphics {
@@ -190,9 +190,5 @@ export class Area {
     this.updateFiguresOnArea(this.figuresOnArea)
     this.updateOccupiedArea(this.totalArea)
     this.figuresOnArea = 0
-  }
-
-  update(delta: number) {
-    this.updateView(delta)
   }
 }

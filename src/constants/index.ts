@@ -45,13 +45,6 @@ export enum ellipseConfig {
   HEIGHT = 70,
 }
 
-export interface CurrentData {
-  gravityValue: number
-  numberOfCurrentShapes: number
-  numberOfCurrentShapesPerSec: number
-  numberOfOccupiedArea: number
-}
-
 export const DEFAULT_GRAVITY_VALUE = 2
 export const DEFAULT_FIGURES_PER_SEC_VALUE = 1
 export const RADIUS = 70
