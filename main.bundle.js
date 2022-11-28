@@ -26604,10 +26604,8 @@ class Model {
 
 
 class Controller {
-    constructor(view) {
-        this.counter = 0;
+    constructor() {
         this.model = new Model();
-        this.view = view;
     }
     clickHandler(name) {
         this.model.setIndexToDestroy(name);
@@ -26641,7 +26639,7 @@ class Area {
             antialias: true,
         });
         (_a = document.getElementById('canvas')) === null || _a === void 0 ? void 0 : _a.appendChild(this.app.view);
-        this.controller = new Controller(this);
+        this.controller = new Controller();
         this.gravityValue = document.getElementById('gravity-value');
         this.numberOfCurrentShapes = document.getElementById('current-shapes');
         this.numberOfOccupiedArea = document.getElementById('occupied-area');
@@ -26656,7 +26654,7 @@ class Area {
         this.bindEventListeners();
     }
     init() {
-        this.app.ticker.add(this.update, this);
+        this.app.ticker.add(this.updateView, this);
     }
     createBackground() {
         const background = new Graphics();
@@ -26762,9 +26760,6 @@ class Area {
         this.updateFiguresOnArea(this.figuresOnArea);
         this.updateOccupiedArea(this.totalArea);
         this.figuresOnArea = 0;
-    }
-    update(delta) {
-        this.updateView(delta);
     }
 }
 
